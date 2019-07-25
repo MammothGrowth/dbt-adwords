@@ -9,7 +9,9 @@
 
 with url_performance_base as (
 
-    select * from {{ var('final_url_performance_report') }}
+    select *, 
+        EFFECTIVE_FINAL_URL as finalurl
+    from {{ var('final_url_performance_report') }}
 
 ),
 
@@ -18,15 +20,15 @@ aggregated as (
     select
 
         {{ dbt_utils.surrogate_key (
-            'customerid',
+            'customer_id',
             'finalurl',
-            'day',
-            'campaignid',
-            'adgroupid'
+            'date',
+            'campaign_id',
+            'ad_group_id'
             
         ) }}::varchar as id,
 
-        day::date as date_day,
+        date::date as date_day,
 
         {{ dbt_utils.split_part('finalurl', "'?'", 1) }} as base_url,
         {{ dbt_utils.get_url_host('finalurl') }} as url_host,
@@ -36,12 +38,12 @@ aggregated as (
         {{ dbt_utils.get_url_parameter('finalurl', 'utm_campaign') }} as utm_campaign,
         {{ dbt_utils.get_url_parameter('finalurl', 'utm_content') }} as utm_content,
         {{ dbt_utils.get_url_parameter('finalurl', 'utm_term') }} as utm_term,
-        campaignid as campaign_id,
-        campaign as campaign_name,
-        adgroupid as ad_group_id,
-        adgroup as ad_group_name,
-        customerid as customer_id,
-        _sdc_report_datetime,
+        campaign_id,
+        campaign_name,
+        ad_group_id,
+        ad_group_name,
+        customer_id,
+        _FIVETRAN_SYNCED,
 
         sum(clicks) as clicks,
         sum(impressions) as impressions,
@@ -59,7 +61,7 @@ ranked as (
     
         *,
         rank() over (partition by id
-            order by _sdc_report_datetime desc) as latest
+            order by _FIVETRAN_SYNCED desc) as latest
             
     from aggregated
 

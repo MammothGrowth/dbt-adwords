@@ -11,7 +11,7 @@ with url_performance_base as (
 
     select *, 
         EFFECTIVE_FINAL_URL as finalurl
-    from {{ var('final_url_performance_report') }}
+    from {{source('google_ads', var('final_url_performance_report'))}}
 
 ),
 

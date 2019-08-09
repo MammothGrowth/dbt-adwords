@@ -9,7 +9,7 @@
 
 with ad_groups_source as (
 
-    select * from {{ var('ad_groups_table') }}
+    select * from {{ source('google_ads', 'ad_groups') }}
 
 ),
 

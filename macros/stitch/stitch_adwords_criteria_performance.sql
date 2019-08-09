@@ -9,7 +9,7 @@
 
 with criteria_base as (
 
-    select * from {{ var('criteria_performance_report') }}
+    select * from {{ source('google_ads', 'criteria_performance_report') }}
 
 ), 
 

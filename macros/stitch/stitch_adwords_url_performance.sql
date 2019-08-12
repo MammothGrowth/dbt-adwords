@@ -9,7 +9,7 @@
 
 with url_performance_base as (
 
-    select * from {{ var('final_url_performance_report') }}
+    select * from {{ source('google_ads', 'final_url_report') }}
 
 ),
 

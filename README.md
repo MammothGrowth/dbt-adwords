@@ -10,9 +10,32 @@ information about packages in dbt. If you haven't already, you will need to crea
 a `packages.yml` file in your project and supply the git link from this repository.
 
 You should then copy the adwords package structure from the `dbt_project.yml` in
-this repository into your project's `dbt_project.yml` file and replace the `source`
-values with the adwords schema name and table names from your warehouse using the syntax `source('schema_name', 'table_name')`.
+this repository into your project's `dbt_project.yml` file and update the models section to specify the correct `etl` and `adapter` values. 
 
+Here is an example using *stitch* as the etl and *url* as the adapter:
+```    
+    adwords:
+        enabled: true
+        materialized: ephemeral 
+        schema: google_ads
+        vars:
+            etl: stitch
+            adapter_value: "url"
+        router:
+            stitch:
+                adwords_click_performance:
+                    enabled: false
+                adwords_criteria_performance:
+                    enabled: false
+            fivetran:
+                enabled: false
+            adapter:
+                materialized: view
+                criteria:
+                    enabled: false
+```
+
+Then replace the `source` values in the macros with the adwords schema name and table names from your warehouse using the syntax `source('schema_name', 'table_name')`.
 For example: if you adwords schema is called `adwords` and the table name is `accounts`, replace the source reference with `source('adwords', 'accounts')`
 
 Please note, because several of the models are based on Adwords "reports" which

@@ -35,8 +35,35 @@ Here is an example using *stitch* as the etl and *url* as the adapter:
                     enabled: false
 ```
 
-Then replace the `source` values in the macros with the adwords schema name and table names from your warehouse using the syntax `source('schema_name', 'table_name')`.
-For example: if you adwords schema is called `adwords` and the table name is `accounts`, replace the source reference with `source('adwords', 'accounts')`
+Then update your `sources.yml` file to match the schema and table name values in the macros.
+
+If your etl service is **Stitch**, use the schema name `google_ads` and these source configurations:
+```
+  - name: google_ads
+    database: STITCH_INGEST
+    schema: GOOGLE_ADS
+    loader: stitch
+    loaded_at_field: _SDC_RECEIVED_AT
+    tables:
+      - name: accounts
+      - name: campaigns
+      - name: ad_groups
+      - name: ads
+      - name: final_url_report
+      - name: criteria_performance_report
+      - name: click_performance_report
+```
+
+If your etl service is **Fivetran**, use the schema name `google_ads` and these source configurations:
+```
+  - name: google_ads
+    database: FIVETRAN_INGEST
+    schema: GOOGLE_ADS
+    loader: fivetran
+    loaded_at_field: _fivetran_synced
+    tables:
+      - name: CAMPAIGN_PERFORMANCE
+```
 
 Please note, because several of the models are based on Adwords "reports" which
 have a layer of aggregation occurring, the specific fields you select in your ETL

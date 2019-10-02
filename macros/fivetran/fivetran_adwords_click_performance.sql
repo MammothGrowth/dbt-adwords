@@ -17,7 +17,7 @@ with gclid_base as (
         ad_group_id,
         row_number() over (partition by gclid order by date_day) as row_num
 
-    from {{ var('click_performance_report') }}
+    from {{source('google_ads', var('click_performance_report'))}}
 
 )
 
